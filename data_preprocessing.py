@@ -218,7 +218,7 @@ def get_subwindows_from_dataframes(list_of_dataframes,
 
     all_feature_values = []
     all_target_values = []
-    for dataframe in tqdm(list_of_dataframes):
+    for dataframe in tqdm(list_of_dataframes, desc="Generating Subwindows"):
         window_list = create_coherent_windows(dataframe,
                                               min_window=window_length)
         if window_list is None:
@@ -316,9 +316,9 @@ def normalize_feature_values(features_array,
     features_array_norm = np.delete(features_array_norm,
                                     invalid_features,
                                     axis=1)
-
-    print("Len invalid features:\t", len(invalid_features))
-    print("Invalid features are:\t", invalid_features, "\n")
+    if len(invalid_features) > 0:
+        print("Len invalid features:\t", len(invalid_features))
+        print("Invalid features are:\t", invalid_features, "\n")
 
     return features_array_norm, standardization_params
 
@@ -342,7 +342,8 @@ def pipeline_level_0(input_file,
                      target_clip_upper=False,
                      target_max=125,
                      fixed_dataframe_assignment=True,
-                     sort_dataframes_after_splitting=False):
+                     sort_dataframes_after_splitting=False,
+                     verbose=True):
     '''
 
     Parameters
@@ -465,8 +466,8 @@ def pipeline_level_0(input_file,
                                                           fixed_seed=fixed_dataframe_assignment,
                                                           sort_lists=sort_dataframes_after_splitting)
 
-    print("'first_list_indices':                     ", first_list_indices)
-    print("'second_list_indices' (before splitting): ", second_list_indices)
+    #print("'first_list_indices':                     ", first_list_indices)
+    #print("'second_list_indices' (before splitting): ", second_list_indices)
 
     second_list_indices,\
         third_list_indices = subdivide_indices_of_a_list(second_list_indices,
@@ -474,8 +475,8 @@ def pipeline_level_0(input_file,
                                                          fixed_seed=fixed_dataframe_assignment,
                                                          sort_lists=sort_dataframes_after_splitting)
 
-    print("'second_list_indices' (after splitting):  ", second_list_indices)
-    print("'third_list_indices':                     ", third_list_indices)
+    #print("'second_list_indices' (after splitting):  ", second_list_indices)
+    #print("'third_list_indices':                     ", third_list_indices)
 
     subwindowing_kwargs = dict(window_length=min_window_length,
                                subwindows=subwindows,
@@ -548,25 +549,24 @@ def pipeline_level_0(input_file,
 
     print("Number of dataframes:                    ",
           len(list_of_dataframes), end="\n\n")
-    print("Shape 'X_train' before normalization:    ", X_train.shape)
+    #print("Shape 'X_train' before normalization:    ", X_train.shape)
     print("Shape 'X_train' after normalization:     ", X_train_norm.shape)
-    print("Shape 'y_train':                         ", y_train.shape)
-    print("Shape 'time_in_cycles_train':            ", time_in_cycles_train.shape)
-    print("Shape 'unit_train':                      ",
-          unit_train.shape, end="\n\n")
+    #print("Shape 'y_train':                         ", y_train.shape)
+    #print("Shape 'time_in_cycles_train':            ", time_in_cycles_train.shape)
+    #print("Shape 'unit_train':                      ", unit_train.shape, end="\n\n")
 
-    print("Shape 'X_test' before normalization:     ", X_test.shape)
+    #print("Shape 'X_test' before normalization:     ", X_test.shape)
     print("Shape 'X_test_norm' after normalization: ", X_test_norm.shape)
-    print("Shape 'y_test':                          ", y_test.shape)
-    print("Shape 'time_in_cycles_test':             ", time_in_cycles_test.shape)
-    print("Shape 'unit_test':                       ",
-          unit_test.shape, end="\n\n")
+    #print("Shape 'y_test':                          ", y_test.shape)
+    #print("Shape 'time_in_cycles_test':             ", time_in_cycles_test.shape)
+    #print("Shape 'unit_test':                       ", unit_test.shape, end="\n\n")
 
-    print("Shape 'X_val' before normalization:      ", X_val.shape)
+    #print("Shape 'X_val' before normalization:      ", X_val.shape)
     print("Shape 'X_val_norm' after normalization:  ", X_val_norm.shape)
-    print("Shape 'y_val':                           ", y_val.shape)
-    print("Shape 'time_in_cycles_val':              ", time_in_cycles_val.shape)
-    print("Shape 'unit_val':                        ", unit_val.shape, end="\n\n")
+    #print("Shape 'y_val':                           ", y_val.shape)
+    #print("Shape 'time_in_cycles_val':              ", time_in_cycles_val.shape)
+    #print("Shape 'unit_val':                        ", unit_val.shape, end="\n\n")
+    
 
     return X_train_norm, y_train, time_in_cycles_train, unit_train,\
         X_test_norm, y_test, time_in_cycles_test, unit_test,\
@@ -593,7 +593,8 @@ def pipeline_level_2(input_file,
                      target_clip_upper=False,
                      target_max=125,
                      fixed_dataframe_assignment=True,
-                     sort_dataframes_after_splitting=False):
+                     sort_dataframes_after_splitting=False,
+                     verbose=True):
 
     if percentage_test + percentage_test > 100:
         raise ValueError("More than 100 % of data can't be splitted")
@@ -640,7 +641,7 @@ def pipeline_level_2(input_file,
                                                           **subwindowing_kwargs)
 
     all_unit_numbers = all_unit_numbers.astype(int)
-
+    
     print("Number of dataframes:          ", len(list_of_dataframes))
     print("Shape 'all_feature_values':    ", all_feature_values.shape)
     print("Shape 'all_time_in_cycles':    ", all_unit_numbers.shape)

@@ -2,7 +2,7 @@
 """
 Created on Thu Sep 23 14:13:55 2021
 
-@author: Fabian
+@author: Fabian Moeller and Vincent Hackstein
 """
 
 from datetime import datetime
@@ -141,14 +141,14 @@ def plot_percentage_of_removed_cycles(input_file_rul,
 
     x_values = range(len(input_file_rul))
     y_values = 100 * input_file_rul.values / np.array(total_cycles)
-    with plt.xkcd():
-        plt.figure(figsize=(10, 10))
-        plt.bar(x=x_values, height=y_values);
-        plt.plot(x_values, len(x_values) * [np.mean(y_values)], c="r", label="mean")
-        plt.xlabel("Engine no.")
-        plt.ylabel("Ratio of RUL to max(time_in_cycles)")
-        plt.legend(loc="upper right")
-        plt.title("Percentage of removed cycles in test dataset")
+    #with plt.xkcd():
+    plt.figure(figsize=(10, 10))
+    plt.bar(x=x_values, height=y_values);
+    plt.plot(x_values, len(x_values) * [np.mean(y_values)], c="r", label="mean")
+    plt.xlabel("Engine no.")
+    plt.ylabel("Ratio of RUL to max(time_in_cycles)")
+    plt.legend(loc="upper right")
+    plt.title("Percentage of removed cycles in test dataset")
 
     save_figure(saving_path=saving_path,
                 figure_name="Ratio_cycles_in_test_to_rul_dataset",
@@ -223,17 +223,17 @@ def plot_mse_and_rul_scoring_function(saving_path="",
     x_values = np.linspace(-40, 40, 1000)
     ground_truth = [0] * len(x_values)
 
-    with plt.xkcd():
-        plt.figure(figsize=(10, 8))
-        plt.plot(x_values, get_rul_score(ground_truth, x_values, return_array=True),
-                 label="RUL-SCORE")
-        plt.plot(x_values, np.abs(x_values),
-                 c="r", label="MSE")
-        plt.xlabel("Difference between prediction and ground truth\t" +
-                   "($ h_{i} = \mathit{RUL}_{pred, i} - \mathit{RUL}_{gt, i}$)")
-        plt.ylabel("RUL-SCORE / MSE")
-        plt.legend(loc="upper left", ncol=1)
-        plt.title("Comparision of RUL Scoring Function and RMSE")
+    #with plt.xkcd():
+    plt.figure(figsize=(10, 8))
+    plt.plot(x_values, get_rul_score(ground_truth, x_values, return_array=True),
+             label="RUL-SCORE")
+    plt.plot(x_values, np.abs(x_values),
+             c="r", label="RMSE")
+    plt.xlabel("Difference between prediction and ground truth\t" +
+               "($ h_{i} = \mathit{RUL}_{pred, i} - \mathit{RUL}_{gt, i}$)")
+    plt.ylabel("RUL-SCORE / MSE")
+    plt.legend(loc="upper left", ncol=1)
+    plt.title("Comparision of RUL Scoring Function and RMSE")
 
     save_figure(saving_path=saving_path,
                 figure_name="RUL_scoring_function_with_mse",
